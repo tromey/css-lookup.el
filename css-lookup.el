@@ -6,15 +6,14 @@
 (defconst css--mdn-url "https://developer.mozilla.org/en-US/docs/Web/CSS/")
 (defconst css--mdn-xhr-params "?raw&macros")
 
-(defun css--render (status window url buffer)
-  (eww-render status url nil buffer)
-  (with-current-buffer buffer
-    (setf header-line-format nil)
-    (goto-char (point-min))
+(defun css--after-render ()
+  (setf header-line-format nil)
+  (goto-char (point-min))
+  (let ((window (display-buffer (current-buffer))))
     (when window
       (when (re-search-forward "^Summary" nil 'move)
-	(beginning-of-line)
-	(set-window-start window (point))))))
+  	(beginning-of-line)
+  	(set-window-start window (point))))))
 
 (defconst css--property-or-atrule-regexp
   (concat "\\(?:\\(@" (regexp-opt css-at-ids)
@@ -53,16 +52,9 @@
   (when symbol
     (let ((url (concat css--mdn-url symbol css--mdn-xhr-params)))
       (with-current-buffer (get-buffer-create "*MDN CSS*")
-	(let ((inhibit-read-only t))
-	  (remove-overlays)
-	  (erase-buffer))
-	(unless (eq major-mode 'eww-mode)
-	  (eww-mode))
-	(plist-put eww-data :url url)
-	(plist-put eww-data :title "")
-	(let ((inhibit-read-only t))
-	  (insert (format "Loading %s..." url))
-	  (goto-char (point-min)))
-	(let ((window (display-buffer (current-buffer))))
-	  (url-retrieve url #'css--render
-			(list window url (current-buffer))))))))
+	(eww-mode)
+	(add-hook 'eww-after-render-hook #'css--after-render nil t)
+	;; Bizarrely, calling display-buffer here causes the rendering
+	;; to happen in the wrong order.
+	;; (display-buffer (current-buffer))
+	(eww url)))))
