@@ -1,3 +1,12 @@
+;;; css-lookup.el --- Like info-lookup-symbol, for CSS -*-lexical-binding:t-*-
+
+;; Author: Tom Tromey <tom@tromey.com>
+;; Version: 1.0
+;; URL: https://github.com/tromey/css-lookup.el
+;; Keywords: help languages
+
+;;; Code:
+
 (require 'css-mode)
 (require 'eww)
 
@@ -37,7 +46,12 @@
 	  (or (match-string-no-properties 1)
 	      (match-string-no-properties 2)))))))
 
+;;;###autoload
 (defun css-lookup-symbol (symbol)
+  "Display the CSS documentation for SYMBOL, as found on MDN.
+When this command is used interactively, it picks a default
+symbol based on the CSS text before point -- either an @-keyword
+or a property name, depending on what is seen."
   (interactive
    (list
     (let* ((sym (css--find-symbol))
@@ -58,3 +72,7 @@
 	;; to happen in the wrong order.
 	;; (display-buffer (current-buffer))
 	(eww url)))))
+
+(define-key css-mode-map [remap info-lookup-symbol] #'css-lookup-symbol)
+
+;;; css-lookup.el ends here
