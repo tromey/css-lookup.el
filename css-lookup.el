@@ -73,6 +73,6 @@ or a property name, depending on what is seen."
 	;; (display-buffer (current-buffer))
 	(eww url)))))
 
-(define-key css-mode-map [remap info-lookup-symbol] #'css-lookup-symbol)
+;;;###autoload(eval-after-load 'css-mode '(define-key css-mode-map [remap info-lookup-symbol] 'css-lookup-symbol))
 
 ;;; css-lookup.el ends here
