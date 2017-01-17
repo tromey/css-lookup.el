@@ -18,11 +18,8 @@
 (defun css--after-render ()
   (setf header-line-format nil)
   (goto-char (point-min))
-  (let ((window (display-buffer (current-buffer))))
-    (when window
-      (when (re-search-forward "^Summary" nil 'move)
-  	(beginning-of-line)
-  	(set-window-start window (point))))))
+  (when (re-search-forward "^Summary" nil 'move)
+    (beginning-of-line)))
 
 (defconst css--property-or-atrule-regexp
   (concat "\\(?:\\(@" (regexp-opt css-at-ids)
@@ -67,10 +64,10 @@ or a property name, depending on what is seen."
     (let ((url (concat css--mdn-url symbol css--mdn-xhr-params)))
       (with-current-buffer (get-buffer-create "*MDN CSS*")
 	(eww-mode)
+	;; Make sure to display the buffer before calling `eww', as
+	;; that calls `pop-to-buffer-same-window'.
+	(display-buffer (current-buffer) t)
 	(add-hook 'eww-after-render-hook #'css--after-render nil t)
-	;; Bizarrely, calling display-buffer here causes the rendering
-	;; to happen in the wrong order.
-	;; (display-buffer (current-buffer))
 	(eww url)))))
 
 ;;;###autoload(eval-after-load 'css-mode '(define-key css-mode-map [remap info-lookup-symbol] 'css-lookup-symbol))
