@@ -21,7 +21,8 @@
   (when (re-search-forward "^Summary" nil 'move)
     (beginning-of-line)))
 
-(defconst css--property-or-atrule-regexp
+(defconst css--mdn-symbol-regexp
+  "Regular expression to match the CSS symbol at point."
   (concat "\\(?:\\(@" (regexp-opt css-at-ids)
 	  "\\)\\|\\(\\b" (regexp-opt css-property-ids)
 	  "\\)\\s-*\\(?:\\=\\|:\\)\\)"))
@@ -33,13 +34,13 @@
 (defun css--find-symbol ()
   (save-excursion
     (skip-chars-backward "-[:alnum:]")
-    (if (looking-at css--property-or-atrule-regexp)
+    (if (looking-at css--mdn-symbol-regexp)
 	(or (match-string-no-properties 1)
 	    (match-string-no-properties 2))
       (let ((bound (save-excursion
 		     (beginning-of-line)
 		     (point))))
-	(when (re-search-backward css--property-or-atrule-regexp bound t)
+	(when (re-search-backward css--mdn-symbol-regexp bound t)
 	  (or (match-string-no-properties 1)
 	      (match-string-no-properties 2)))))))
 
