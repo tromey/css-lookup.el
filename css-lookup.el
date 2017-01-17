@@ -38,7 +38,7 @@
   "Regular expression to match the CSS symbol at point.")
 
 (defconst css--mdn-property-regexp
-  (concat "\\b" (regexp-opt css-property-ids t) "\\s-*\\(?:\\=\\|:\\)")
+  (concat "\\_<" (regexp-opt css-property-ids t) "\\s-*\\(?:\\=\\|:\\)")
   "Regular expression to match a CSS property.")
 
 (defconst css--mdn-completion-list
