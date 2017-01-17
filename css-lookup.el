@@ -27,7 +27,8 @@
 	  "\\)\\|\\(\\b" (regexp-opt css-property-ids)
 	  "\\)\\s-*\\(?:\\=\\|:\\)\\)"))
 
-(defconst css--properties-and-atrules
+(defconst css--mdn-completion-list
+  "List of all symbols available for lookup via MDN."
   (nconc (mapcar (lambda (atrule) (concat "@" atrule)) css-at-ids)
 	 css-property-ids))
 
@@ -58,7 +59,7 @@ or a property name, depending on what is seen."
 		   (if sym
 		       (format "Describe CSS symbol (default %s): " sym)
 		     "Describe CSS symbol: ")
-		   css--properties-and-atrules nil nil nil
+		   css--mdn-completion-list nil nil nil
 		   'css--lookup-history sym)))
       (if (equal value "") sym value))))
   (when symbol
