@@ -18,8 +18,11 @@
 (defun css--after-render ()
   (setf header-line-format nil)
   (goto-char (point-min))
-  (when (re-search-forward "^Summary" nil 'move)
-    (beginning-of-line)))
+  (let ((window (get-buffer-window (current-buffer) 'visible)))
+    (when window
+      (when (re-search-forward "^Summary" nil 'move)
+  	(beginning-of-line)
+  	(set-window-start window (point))))))
 
 (defconst css--mdn-symbol-regexp
   (concat "\\("
