@@ -1,7 +1,7 @@
 ;;; css-lookup.el --- Like info-lookup-symbol, for CSS -*-lexical-binding:t-*-
 
 ;; Author: Tom Tromey <tom@tromey.com>
-;; Version: 1.1
+;; Version: 1.2
 ;; URL: https://github.com/tromey/css-lookup.el
 ;; Keywords: help languages
 
