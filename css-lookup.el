@@ -10,12 +10,12 @@
 (require 'css-mode)
 (require 'eww)
 
-(defvar css--lookup-history nil)
+(defvar css--mdn-lookup-history nil)
 
 (defconst css--mdn-url "https://developer.mozilla.org/en-US/docs/Web/CSS/")
 (defconst css--mdn-xhr-params "?raw&macros")
 
-(defun css--after-render ()
+(defun css--mdn-after-render ()
   (setf header-line-format nil)
   (goto-char (point-min))
   (let ((window (get-buffer-window (current-buffer) 'visible)))
@@ -57,7 +57,7 @@
    css-property-ids)
   "List of all symbols available for lookup via MDN.")
 
-(defun css--find-symbol ()
+(defun css--mdn-find-symbol ()
   "A helper for `css-lookup-symbol' that finds the symbol at point.
 Returns the symbol, a string, or `nil' if none found."
   (save-excursion
@@ -82,14 +82,14 @@ a property name, a pseudo-class, or a pseudo-element, depending
 on what is seen near point."
   (interactive
    (list
-    (let* ((sym (css--find-symbol))
+    (let* ((sym (css--mdn-find-symbol))
 	   (enable-recursive-minibuffers t)
 	   (value (completing-read
 		   (if sym
 		       (format "Describe CSS symbol (default %s): " sym)
 		     "Describe CSS symbol: ")
 		   css--mdn-completion-list nil nil nil
-		   'css--lookup-history sym)))
+		   'css--mdn-lookup-history sym)))
       (if (equal value "") sym value))))
   (when symbol
     ;; If we see a single-colon pseudo-element like ":after", turn it
@@ -103,7 +103,7 @@ on what is seen near point."
 	;; Make sure to display the buffer before calling `eww', as
 	;; that calls `pop-to-buffer-same-window'.
 	(display-buffer (current-buffer) t)
-	(add-hook 'eww-after-render-hook #'css--after-render nil t)
+	(add-hook 'eww-after-render-hook #'css--mdn-after-render nil t)
 	(eww url)))))
 
 ;;;###autoload(eval-after-load 'css-mode '(define-key css-mode-map [remap info-lookup-symbol] 'css-lookup-symbol))
