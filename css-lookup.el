@@ -12,8 +12,15 @@
 
 (defvar css--mdn-lookup-history nil)
 
-(defconst css--mdn-url "https://developer.mozilla.org/en-US/docs/Web/CSS/")
-(defconst css--mdn-xhr-params "?raw&macros")
+(defcustom css-lookup-url-format
+  "https://developer.mozilla.org/en-US/docs/Web/CSS/%s?raw&macros"
+  "Format for a URL where CSS documentation can be found.
+The format should include a single \"%s\" substitution.
+The name of the CSS property, @-id, pseudo-class, or pseudo-element
+to look up will be substituted there."
+  :version "26.1"
+  :type 'string
+  :group 'css)
 
 (defun css--mdn-after-render ()
   (setf header-line-format nil)
@@ -97,7 +104,7 @@ on what is seen near point."
     (when (and (eq (aref symbol 0) ?:)
 	       (member (substring symbol 1) css-pseudo-element-ids))
       (setq symbol (concat ":" symbol)))
-    (let ((url (concat css--mdn-url symbol css--mdn-xhr-params)))
+    (let ((url (format css-lookup-url-format symbol)))
       (with-current-buffer (get-buffer-create "*MDN CSS*")
 	(eww-mode)
 	;; Make sure to display the buffer before calling `eww', as
